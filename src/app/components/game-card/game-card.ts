@@ -23,25 +23,25 @@ export class GameCardComponent {
   getPlatformIcon(slug: string): string {
     switch (slug) {
       case 'pc':
-        return '💻';
+        return 'PC';
       case 'playstation':
       case 'playstation3':
       case 'playstation4':
       case 'playstation5':
-        return '🎮';
+        return 'PS';
       case 'xbox':
       case 'xbox360':
       case 'xbox-one':
       case 'xbox-series-x':
-        return '💚';
+        return 'XB';
       case 'nintendo':
       case 'nintendo-switch':
-        return '❤️';
+        return 'NS';
       case 'ios':
       case 'android':
-        return '📱';
+        return 'MOB';
       default:
-        return '🕹️';
+        return 'SYS';
     }
   }
 

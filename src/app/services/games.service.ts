@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, map, catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Game, GamesResponse } from '../models/game.model';
 
@@ -19,10 +19,22 @@ export class GamesService {
       .get<GamesResponse>(`${this.baseUrl}/games`, {
         params: {
           ordering: '-rating',
-          page_size: '20'
+          page_size: '22' // Fetch a couple extra to account for filters
         }
       })
-      .pipe(catchError(this.handleError));
+      .pipe(
+        map((response: GamesResponse) => {
+          response.results = response.results.filter(
+            game => 
+              game && 
+              game.name && 
+              !game.name.toLowerCase().includes('hazbin hotel') && 
+              !game.name.toLowerCase().includes('charlie')
+          ).slice(0, 20);
+          return response;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   /**

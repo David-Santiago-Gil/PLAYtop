@@ -8,37 +8,24 @@
 
     <!-- NAV DESKTOP -->
     <nav class="header__nav" role="navigation" aria-label="Navegación principal">
-      <a routerLink="/"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{exact: true}"
-         class="header__nav-link">
-        <span class="header__nav-icon">🏠</span> Home
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="header__nav-link">
+        Home
       </a>
-      <a routerLink="/search"
-         routerLinkActive="active"
-         class="header__nav-link">
-        <span class="header__nav-icon">🔍</span> Buscar
+
+      <a routerLink="/favorites" routerLinkActive="active" class="header__nav-link">
+        Favoritos
       </a>
-      <a routerLink="/favorites"
-         routerLinkActive="active"
-         class="header__nav-link">
-        <span class="header__nav-icon">❤️</span> Favoritos
-      </a>
-      
+
       <!-- Desktop Search Bar -->
       <form class="header__search" (submit)="onSearch($event, searchVal.value)">
         <input #searchVal type="text" placeholder="Buscar juego..." class="header__search-input" />
-        <button type="submit" class="header__search-btn" aria-label="Buscar">🔍</button>
+        <button type="submit" class="header__search-btn" aria-label="Buscar"></button>
       </form>
     </nav>
 
     <!-- HAMBURGER -->
-    <button class="header__burger"
-            id="menu-toggle"
-            [class.open]="menuOpen()"
-            (click)="toggleMenu()"
-            aria-label="Abrir menú"
-            [attr.aria-expanded]="menuOpen()">
+    <button class="header__burger" id="menu-toggle" [class.open]="menuOpen()" (click)="toggleMenu()"
+      aria-label="Abrir menú" [attr.aria-expanded]="menuOpen()">
       <span></span>
       <span></span>
       <span></span>
@@ -47,32 +34,15 @@
 
   <!-- MOBILE MENU -->
   @if (menuOpen()) {
-    <nav class="header__mobile-nav" role="navigation" aria-label="Menú móvil">
-      <!-- Mobile Search Bar -->
-      <form class="header__mobile-search" (submit)="onSearch($event, mobileSearchVal.value)">
-        <input #mobileSearchVal type="text" placeholder="Buscar juego..." class="header__mobile-search-input" />
-        <button type="submit" class="header__mobile-search-btn" aria-label="Buscar">🔍</button>
-      </form>
+  <nav class="header__mobile-nav" role="navigation" aria-label="Menú móvil">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="header__mobile-link"
+      (click)="closeMenu()">
+      Home
+    </a>
 
-      <a routerLink="/"
-         routerLinkActive="active"
-         [routerLinkActiveOptions]="{exact: true}"
-         class="header__mobile-link"
-         (click)="closeMenu()">
-        🏠 Home
-      </a>
-      <a routerLink="/search"
-         routerLinkActive="active"
-         class="header__mobile-link"
-         (click)="closeMenu()">
-        🔍 Buscar
-      </a>
-      <a routerLink="/favorites"
-         routerLinkActive="active"
-         class="header__mobile-link"
-         (click)="closeMenu()">
-        ❤️ Favoritos
-      </a>
-    </nav>
+    <a routerLink="/favorites" routerLinkActive="active" class="header__mobile-link" (click)="closeMenu()">
+      Favoritos
+    </a>
+  </nav>
   }
 </header>

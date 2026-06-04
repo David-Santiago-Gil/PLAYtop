@@ -1,18 +1,159 @@
-<section class="game-detail">
-  <div class="container">
-    <div class="game-detail__back fade-in-up">
-      <a routerLink="/" class="btn btn--ghost">← Volver al inicio</a>
-    </div>
+<section class="detail">
 
-    <div class="game-detail__placeholder fade-in-up">
-      <div class="game-detail__icon">🎮</div>
-      <h1 class="game-detail__title">Detalle del Juego</h1>
-      <p class="game-detail__id">
-        ID: <span class="text-red">{{ gameId }}</span>
-      </p>
-      <p class="game-detail__desc">
-        La vista completa del juego llegará en el <span class="text-red">Día 6</span>
-      </p>
+  <!-- ═══════════ LOADING ═══════════ -->
+  @if (loading()) {
+  <div class="detail__loading">
+    <div class="detail__spinner"></div>
+    <p class="detail__loading-text">Cargando juego...</p>
+  </div>
+  }
+
+  <!-- ═══════════ ERROR ═══════════ -->
+  @else if (error()) {
+  <div class="detail__error container">
+    <p class="detail__error-text">⚠️ {{ error() }}</p>
+    <a routerLink="/" class="btn btn--primary">← Volver al inicio</a>
+  </div>
+  }
+
+  <!-- ═══════════ GAME CONTENT ═══════════ -->
+  @else if (game()) {
+  <!-- HERO IMAGE — alta resolución full-width -->
+  <div class="detail__hero"
+    [style.--hero-bg]="'url(' + (game()!.background_image_additional || game()!.background_image) + ')'">
+    <div class="detail__hero-bg"></div>
+    <div class="detail__hero-overlay"></div>
+    <div class="detail__hero-scanlines" aria-hidden="true"></div>
+
+    <!-- HUD corners -->
+    <div class="detail__hero-corner detail__hero-corner--tl" aria-hidden="true"></div>
+    <div class="detail__hero-corner detail__hero-corner--tr" aria-hidden="true"></div>
+
+    <!-- Back button on top of hero -->
+    <div class="detail__hero-nav container">
+      <a routerLink="/" class="btn btn--ghost detail__back-btn">← Volver</a>
     </div>
   </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="detail__body fade-in-up">
+
+      <!-- LEFT: Cover thumbnail + meta -->
+      <aside class="detail__sidebar">
+        <!-- Thumbnail (crisp, smaller image) -->
+        @if (game()!.background_image) {
+        <div class="detail__thumb-wrap">
+          <img [src]="game()!.background_image" [alt]="game()!.name" class="detail__thumb" />
+          @if (game()!.metacritic) {
+          <div class="detail__mc" [class]="getMetacriticClass(game()!.metacritic)">
+            <span class="detail__mc-label">MC</span>
+            <span class="detail__mc-score">{{ game()!.metacritic }}</span>
+          </div>
+          }
+        </div>
+        }
+
+          <!-- Quick stats -->
+          <div class="detail__stats">
+            <div class="detail__stat">
+              <span class="detail__stat-label">Rating</span>
+              <span class="detail__stat-value">Score: {{ game()!.rating }} / 5</span>
+            </div>
+            @if (game()!.playtime) {
+            <div class="detail__stat">
+              <span class="detail__stat-label">Tiempo de juego</span>
+              <span class="detail__stat-value">{{ game()!.playtime }}h promedio</span>
+            </div>
+            }
+            @if (game()!.released) {
+            <div class="detail__stat">
+              <span class="detail__stat-label">Lanzamiento</span>
+              <span class="detail__stat-value">{{ game()!.released | date:'dd MMM yyyy' }}</span>
+            </div>
+            }
+            @if (game()!.esrb_rating) {
+            <div class="detail__stat">
+              <span class="detail__stat-label">ESRB</span>
+              <span class="detail__stat-value">{{ game()!.esrb_rating!.name }}</span>
+            </div>
+            }
+          </div>
+
+          <!-- Website link -->
+          @if (game()!.website) {
+          <a [href]="game()!.website" target="_blank" rel="noopener" class="btn btn--outline detail__website-btn">
+            Sitio oficial
+          </a>
+          }
+        </aside>
+
+        <!-- RIGHT: Details -->
+        <div class="detail__main">
+
+          <!-- Genres tags -->
+          @if (game()!.genres && game()!.genres.length) {
+          <div class="detail__tags">
+            @for (genre of game()!.genres; track genre.id) {
+            <span class="detail__genre-tag">{{ genre.name }}</span>
+            }
+          </div>
+          }
+
+          <!-- Title -->
+          <h1 class="detail__title">{{ game()!.name }}</h1>
+
+          <!-- Platforms -->
+          @if (game()!.platforms && game()!.platforms.length) {
+          <div class="detail__platforms">
+            @for (p of game()!.platforms; track p.platform.id) {
+            <span class="detail__platform-tag">{{ p.platform.name }}</span>
+            }
+          </div>
+          }
+
+          <!-- Divider -->
+          <div class="detail__divider" aria-hidden="true"></div>
+
+          <!-- Description -->
+          @if (game()!.description_raw) {
+          <div class="detail__desc-wrap">
+            <h2 class="detail__section-title">Acerca del juego</h2>
+            <p class="detail__desc">{{ getShortDescription(game()!.description_raw) }}</p>
+          </div>
+          }
+
+          <!-- Developers & Publishers -->
+          <div class="detail__credits">
+            @if (game()!.developers && game()!.developers?.length) {
+            <div class="detail__credit">
+              <span class="detail__credit-label">Desarrollador</span>
+              <span class="detail__credit-value">{{ game()!.developers?.[0]?.name }}</span>
+            </div>
+            }
+            @if (game()!.publishers && game()!.publishers?.length) {
+            <div class="detail__credit">
+              <span class="detail__credit-label">Publisher</span>
+              <span class="detail__credit-value">{{ game()!.publishers?.[0]?.name }}</span>
+            </div>
+            }
+          </div>
+
+          <!-- Tags -->
+          @if (game()!.tags && game()!.tags.length) {
+          <div class="detail__tag-cloud">
+            <h2 class="detail__section-title">Etiquetas</h2>
+            <div class="detail__tag-list">
+              @for (tag of game()!.tags.slice(0, 12); track tag.id) {
+              <span class="detail__tag">{{ tag.name }}</span>
+              }
+            </div>
+          </div>
+          }
+
+      </div>
+    </div>
+  </div>
+  }
+
 </section>

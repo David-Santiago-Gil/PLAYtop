@@ -1,24 +1,94 @@
 <section class="home">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- HERO BANNER: Portada con juego aleatorio       -->
+  <!-- ══════════════════════════════════════════════ -->
+  @if (!searchQuery() && featuredGame()) {
+    <div class="featured-banner" [style.--bg]="'url(' + featuredGame()!.background_image + ')'">
+      <!-- Background layers -->
+      <div class="featured-banner__bg"></div>
+      <div class="featured-banner__overlay"></div>
+      <div class="featured-banner__scanlines"></div>
+
+      <!-- Content -->
+      <div class="featured-banner__content container">
+        <!-- Badge -->
+        <div class="featured-banner__badge">
+          <span class="featured-banner__badge-dot"></span>
+          JUEGO DESTACADO
+        </div>
+
+        <!-- Title -->
+        <h1 class="featured-banner__title">{{ featuredGame()!.name }}</h1>
+
+        <!-- Meta Info -->
+        <div class="featured-banner__meta">
+          @if (featuredGame()!.rating) {
+            <span class="featured-banner__rating">
+              <span class="featured-banner__rating-star">★</span>
+              {{ featuredGame()!.rating | number:'1.1-1' }} / 5
+            </span>
+          }
+          @if (featuredGame()!.released) {
+            <span class="featured-banner__separator">|</span>
+            <span class="featured-banner__year">{{ featuredGame()!.released | date:'yyyy' }}</span>
+          }
+          @if (featuredGame()!.metacritic) {
+            <span class="featured-banner__separator">|</span>
+            <span class="featured-banner__mc" [class.featured-banner__mc--green]="featuredGame()!.metacritic! >= 75"
+                                               [class.featured-banner__mc--yellow]="featuredGame()!.metacritic! >= 50 && featuredGame()!.metacritic! < 75"
+                                               [class.featured-banner__mc--red]="featuredGame()!.metacritic! < 50">
+              MC {{ featuredGame()!.metacritic }}
+            </span>
+          }
+        </div>
+
+        <!-- Genres -->
+        @if (featuredGame()!.genres && featuredGame()!.genres.length) {
+          <div class="featured-banner__genres">
+            @for (genre of featuredGame()!.genres.slice(0, 4); track genre.id) {
+              <span class="featured-banner__genre-tag">{{ genre.name }}</span>
+            }
+          </div>
+        }
+
+        <!-- CTA -->
+        <a [routerLink]="['/details', featuredGame()!.id]" class="featured-banner__cta btn btn--primary">
+          <span>▶ VER DETALLES</span>
+        </a>
+      </div>
+
+      <!-- Corner decoration -->
+      <div class="featured-banner__corner-tl"></div>
+      <div class="featured-banner__corner-br"></div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SECTION HEADER                                 -->
+  <!-- ══════════════════════════════════════════════ -->
   <div class="container">
     <div class="home__hero fade-in-up">
       @if (searchQuery()) {
-        <h1 class="home__title">
-          🔍 Resultados para: <span class="text-red">"{{ searchQuery() }}"</span>
-        </h1>
+        <h2 class="home__title">
+          Resultados para: <span class="text-red">"{{ searchQuery() }}"</span>
+        </h2>
         <p class="home__subtitle">
           Búsqueda realizada con éxito en la API
         </p>
       } @else {
-        <h1 class="home__title">
-          🎮 Top <span class="text-red">20</span> Juegos
-        </h1>
+        <h2 class="home__title">
+          Top <span class="text-red">20</span> Juegos Más Jugados
+        </h2>
         <p class="home__subtitle">
-          Los mejores juegos del momento — ordenados por rating
+          Los mejores juegos del momento — ordenados por rating global
         </p>
       }
     </div>
 
-    <!-- Día 4: Grid de Tarjetas de Juego -->
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- GAMES GRID                                     -->
+    <!-- ══════════════════════════════════════════════ -->
     @if (loading()) {
       <div class="home__loading">
         <div class="spinner"></div>
@@ -26,7 +96,7 @@
       </div>
     } @else if (error()) {
       <div class="home__error">
-        <p class="home__error-text">⚠️ {{ error() }}</p>
+        <p class="home__error-text">ERROR: {{ error() }}</p>
       </div>
     } @else {
       <div class="home__grid">
@@ -34,7 +104,6 @@
           <app-game-card [game]="game" />
         } @empty {
           <div class="home__empty">
-            <div class="home__empty-icon">🕹️</div>
             <p class="home__empty-text">No se encontraron juegos para esta búsqueda.</p>
           </div>
         }

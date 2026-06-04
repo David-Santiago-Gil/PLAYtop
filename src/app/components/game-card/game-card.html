@@ -4,7 +4,7 @@
     @if (game.background_image) {
       <img [src]="game.background_image" [alt]="game.name" class="game-card__img" loading="lazy" />
     } @else {
-      <div class="game-card__img-placeholder">🕹️ No Image</div>
+      <div class="game-card__img-placeholder">No Image</div>
     }
     
     <!-- Metacritic Score Badge -->
@@ -24,7 +24,7 @@
   <div class="game-card__content">
     <!-- Header: Meta info -->
     <div class="game-card__meta">
-      <span class="game-card__rating">⭐ {{ game.rating }}</span>
+      <span class="game-card__rating">Rating: {{ game.rating }}</span>
       <span class="game-card__released" *ngIf="game.released">{{ game.released | date:'yyyy' }}</span>
     </div>
 

@@ -5,10 +5,13 @@ import { GamesService } from '../../services/games.service';
 import { Game } from '../../models/game.model';
 import { GameCardComponent } from '../game-card/game-card';
 
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [GameCardComponent],
+  imports: [GameCardComponent, RouterLink, CommonModule],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
@@ -17,6 +20,7 @@ export class HomeComponent implements OnInit {
   private gamesService = inject(GamesService);
 
   games = signal<Game[]>([]);
+  featuredGame = signal<Game | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
   searchQuery = signal<string | null>(null);
@@ -30,13 +34,16 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   private loadGames(query?: string): void {
     this.loading.set(true);
     this.error.set(null);
+    if (!query) {
+      this.featuredGame.set(null);
+    }
 
-    const games$ = query 
+    const games$ = query
       ? this.gamesService.searchGames(query)
       : this.gamesService.getPopularGames();
 
@@ -51,9 +58,15 @@ export class HomeComponent implements OnInit {
         this.games.set(response.results);
         this.loading.set(false);
 
+        // Select a random game for the hero banner if not searching
+        if (!query && response.results.length > 0) {
+          const randomIndex = Math.floor(Math.random() * response.results.length);
+          this.featuredGame.set(response.results[randomIndex]);
+        }
+
         console.log(`✅ Se obtuvieron ${response.results.length} juegos de ${response.count} totales`);
         console.log(query ? `📋 Resultados de búsqueda para "${query}":` : '📋 Top 20 juegos más populares:');
-        
+
         response.results.forEach((game, index) => {
           console.log(
             `${index + 1}. ${game.name} | ⭐ ${game.rating} | 📅 ${game.released ?? 'N/A'} | 🎮 ${game.genres?.map(g => g.name).join(', ') || 'Sin género'}`

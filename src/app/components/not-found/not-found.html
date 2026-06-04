@@ -1,14 +1,56 @@
 <section class="not-found">
+
+  <!-- Background image layer -->
+  <div class="not-found__bg">
+    <img src="not-found-hero.png" alt="" class="not-found__bg-img" aria-hidden="true" />
+    <div class="not-found__bg-overlay"></div>
+  </div>
+
+  <!-- Scanlines -->
+  <div class="not-found__scanlines" aria-hidden="true"></div>
+
+  <!-- Main content -->
   <div class="not-found__content fade-in-up">
-    <div class="not-found__glitch" aria-hidden="true">404</div>
+
+    <!-- Corner decorations HUD -->
+    <div class="not-found__hud-tl" aria-hidden="true"></div>
+    <div class="not-found__hud-tr" aria-hidden="true"></div>
+    <div class="not-found__hud-bl" aria-hidden="true"></div>
+    <div class="not-found__hud-br" aria-hidden="true"></div>
+
+    <!-- Glitch number -->
+    <div class="not-found__glitch" data-text="404" aria-hidden="true">404</div>
+
+    <!-- Status badge -->
+    <div class="not-found__badge">
+      <span class="not-found__badge-dot"></span>
+      ERROR — RUTA NO ENCONTRADA
+    </div>
+
+    <!-- Title -->
     <h1 class="not-found__title">¡GAME OVER!</h1>
-    <p class="not-found__sub">Esta página no existe</p>
+
+    <!-- Subtitle -->
+    <p class="not-found__sub">Esta página no existe en nuestro universo</p>
+
+    <!-- Description -->
     <p class="not-found__desc">
-      La ruta que intentas alcanzar no está en el mapa.<br>
-      Vuelve al inicio y sigue jugando.
+      La ruta que intentas alcanzar no está en el mapa del juego.<br>
+      El astronauta también está perdido — vuelve al inicio.
     </p>
-    <a routerLink="/" id="back-home-btn" class="btn btn--primary not-found__btn">
-      🏠 Volver al inicio
-    </a>
+
+    <!-- Divider line -->
+    <div class="not-found__divider" aria-hidden="true"></div>
+
+    <!-- Action buttons -->
+    <div class="not-found__actions">
+      <a routerLink="/" id="back-home-btn" class="btn btn--primary not-found__btn">
+        Volver al inicio
+      </a>
+      <a routerLink="/favorites" class="btn btn--outline not-found__btn">
+        Mis Favoritos
+      </a>
+    </div>
+
   </div>
 </section>
