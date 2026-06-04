@@ -1,19 +1,39 @@
 <section class="home">
   <div class="container">
     <div class="home__hero fade-in-up">
-      <h1 class="home__title">
-        🎮 Top <span class="text-red">20</span> Juegos
-      </h1>
-      <p class="home__subtitle">
-        Los mejores juegos del momento — ordenados por rating
-      </p>
+      @if (searchQuery()) {
+        <h1 class="home__title">
+          🔍 Resultados para: <span class="text-red">"{{ searchQuery() }}"</span>
+        </h1>
+        <p class="home__subtitle">
+          Búsqueda realizada con éxito en la API
+        </p>
+      } @else {
+        <h1 class="home__title">
+          🎮 Top <span class="text-red">20</span> Juegos
+        </h1>
+        <p class="home__subtitle">
+          Los mejores juegos del momento — ordenados por rating
+        </p>
+      }
     </div>
 
-    <!-- Día 4: aquí irá el grid de GameCardComponent -->
+    <!-- Día 3: Buscador funcional con logging en consola -->
     <div class="home__placeholder fade-in-up">
-      <div class="home__placeholder-icon">🕹️</div>
+      <div class="home__placeholder-icon">
+        @if (loading()) { ⌛ } @else if (error()) { ❌ } @else { 🕹️ }
+      </div>
       <p class="home__placeholder-text">
-        Los juegos aparecerán aquí <span class="text-red">muy pronto</span>
+        @if (loading()) {
+          Cargando juegos desde la API...
+        } @else if (error()) {
+          {{ error() }}
+        } @else {
+          Buscador funcionando. Se han encontrado <span class="text-red">{{ games().length }}</span> juegos.<br>
+          <span style="font-size: 0.9rem; opacity: 0.8;">
+            Abre la consola de desarrollo (F12) para ver la lista y la tabla detallada.
+          </span>
+        }
       </p>
     </div>
   </div>

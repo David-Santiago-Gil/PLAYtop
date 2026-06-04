@@ -1,5 +1,5 @@
-import { Component, signal, HostListener } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, signal, HostListener, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,6 +9,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './header.scss'
 })
 export class HeaderComponent {
+  private router = inject(Router);
   menuOpen = signal(false);
   scrolled = signal(false);
 
@@ -18,6 +19,14 @@ export class HeaderComponent {
 
   closeMenu(): void {
     this.menuOpen.set(false);
+  }
+
+  onSearch(event: Event, inputVal: string): void {
+    event.preventDefault();
+    if (inputVal.trim()) {
+      this.router.navigate(['/search'], { queryParams: { q: inputVal.trim() } });
+      this.closeMenu();
+    }
   }
 
   @HostListener('window:scroll')
