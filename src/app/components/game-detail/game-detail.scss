@@ -1,0 +1,45 @@
+.game-detail {
+  padding: 48px 0 64px;
+
+  &__back {
+    margin-bottom: 32px;
+  }
+
+  &__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 350px;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    text-align: center;
+    animation-delay: 0.1s;
+  }
+
+  &__icon  { font-size: 4rem; }
+
+  &__title {
+    font-family: var(--font-title);
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__id {
+    font-family: var(--font-sub);
+    font-size: 1.1rem;
+    color: var(--color-gray-400);
+
+    span { font-weight: 700; }
+  }
+
+  &__desc {
+    font-family: var(--font-sub);
+    font-size: 1rem;
+    color: var(--color-gray-400);
+  }
+}

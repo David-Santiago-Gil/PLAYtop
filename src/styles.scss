@@ -1,1 +1,151 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+/* ===== DESIGN TOKENS ===== */
+:root {
+  --color-bg:        #0a0a0a;
+  --color-bg-card:   #141414;
+  --color-bg-hover:  #1a1a1a;
+  --color-surface:   #1e1e1e;
+  --color-border:    #2a2a2a;
+  --color-red:       #ff0033;
+  --color-red-dark:  #cc0029;
+  --color-red-glow:  rgba(255, 0, 51, 0.35);
+  --color-white:     #ffffff;
+  --color-gray-100:  #f0f0f0;
+  --color-gray-400:  #9a9a9a;
+  --color-gray-600:  #555555;
+
+  --font-title:  'Orbitron', sans-serif;
+  --font-sub:    'Rajdhani', sans-serif;
+  --font-body:   'Inter', sans-serif;
+
+  --header-h:    68px;
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --transition:  0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.6);
+  --shadow-red:  0 0 20px var(--color-red-glow);
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+ul, ol { list-style: none; }
+
+/* ===== LAYOUT ===== */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+main {
+  padding-top: var(--header-h);
+  min-height: 100vh;
+}
+
+/* ===== UTILITY ===== */
+.text-red    { color: var(--color-red); }
+.text-gray   { color: var(--color-gray-400); }
+.text-center { text-align: center; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sub);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: var(--transition);
+  cursor: pointer;
+
+  &--primary {
+    background: var(--color-red);
+    color: var(--color-white);
+    border: 2px solid var(--color-red);
+    &:hover {
+      background: var(--color-red-dark);
+      box-shadow: var(--shadow-red);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    color: var(--color-red);
+    border: 2px solid var(--color-red);
+    &:hover {
+      background: var(--color-red);
+      color: var(--color-white);
+      box-shadow: var(--shadow-red);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--ghost {
+    background: var(--color-surface);
+    color: var(--color-gray-100);
+    border: 2px solid var(--color-border);
+    &:hover {
+      border-color: var(--color-red);
+      color: var(--color-red);
+    }
+  }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-red); border-radius: 3px; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 8px var(--color-red-glow); }
+  50%       { box-shadow: 0 0 24px var(--color-red-glow); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.5s var(--transition) both;
+}
