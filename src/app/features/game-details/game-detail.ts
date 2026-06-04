@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { GamesService } from '../../services/games.service';
-import { Game } from '../../models/game.model';
+import { GamesService } from '../../core/services/games.service';
+import { Game } from '../../core/models/game.model';
 
 @Component({
   selector: 'app-game-detail',

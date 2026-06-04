@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { HomeComponent }       from './components/home/home';
-import { GameDetailComponent } from './components/game-detail/game-detail';
-import { FavoritesComponent }  from './components/favorites/favorites';
-import { NotFoundComponent }   from './components/not-found/not-found';
+import { HomeComponent }       from './features/home/home';
+import { GameDetailComponent } from './features/game-details/game-detail';
+import { FavoritesComponent }  from './features/favorites/favorites';
+import { NotFoundComponent }   from './features/not-found/not-found';
+
 
 export const routes: Routes = [
   {

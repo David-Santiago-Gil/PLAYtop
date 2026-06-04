@@ -4,7 +4,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
-import { apiKeyInterceptor } from './interceptors/api-key.interceptor';
+import { apiKeyInterceptor } from './core/interceptors/api-key.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [

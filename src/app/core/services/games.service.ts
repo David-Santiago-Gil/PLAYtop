@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, map, catchError, throwError } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Game, GamesResponse } from '../models/game.model';
 
 @Injectable({

@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { GamesService } from '../../services/games.service';
-import { Game } from '../../models/game.model';
-import { GameCardComponent } from '../game-card/game-card';
+import { GamesService } from '../../core/services/games.service';
+import { Game } from '../../core/models/game.model';
+import { GameCardComponent } from '../../shared/components/game-card/game-card';
 
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
