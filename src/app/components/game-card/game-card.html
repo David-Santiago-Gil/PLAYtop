@@ -1,0 +1,58 @@
+<div class="game-card fade-in-up">
+  <!-- Card Media -->
+  <div class="game-card__media">
+    @if (game.background_image) {
+      <img [src]="game.background_image" [alt]="game.name" class="game-card__img" loading="lazy" />
+    } @else {
+      <div class="game-card__img-placeholder">🕹️ No Image</div>
+    }
+    
+    <!-- Metacritic Score Badge -->
+    @if (game.metacritic) {
+      <div class="game-card__metacritic" [ngClass]="getMetacriticColor(game.metacritic)">
+        {{ game.metacritic }}
+      </div>
+    }
+
+    <!-- Favorite Button overlay -->
+    <button class="game-card__fav-btn" aria-label="Agregar a favoritos">
+      <span class="heart-icon">♡</span>
+    </button>
+  </div>
+
+  <!-- Card Info -->
+  <div class="game-card__content">
+    <!-- Header: Meta info -->
+    <div class="game-card__meta">
+      <span class="game-card__rating">⭐ {{ game.rating }}</span>
+      <span class="game-card__released" *ngIf="game.released">{{ game.released | date:'yyyy' }}</span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="game-card__title" [title]="game.name">{{ game.name }}</h3>
+
+    <!-- Genres -->
+    <p class="game-card__genres">
+      <span *ngFor="let genre of game.genres | slice:0:3; let last = last">
+        {{ genre.name }}{{ !last ? ', ' : '' }}
+      </span>
+    </p>
+
+    <!-- Footer: Platforms + Action Button -->
+    <div class="game-card__footer">
+      <!-- Platform icons list -->
+      <div class="game-card__platforms">
+        <span *ngFor="let slug of getUniquePlatforms()" 
+              [title]="slug" 
+              class="game-card__platform-icon">
+          {{ getPlatformIcon(slug) }}
+        </span>
+      </div>
+
+      <!-- Action Button (Gamer Button) -->
+      <a [routerLink]="['/details', game.id]" class="btn btn--primary btn--compact">
+        Ver detalles
+      </a>
+    </div>
+  </div>
+</div>

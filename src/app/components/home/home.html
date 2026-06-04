@@ -18,23 +18,27 @@
       }
     </div>
 
-    <!-- Día 3: Buscador funcional con logging en consola -->
-    <div class="home__placeholder fade-in-up">
-      <div class="home__placeholder-icon">
-        @if (loading()) { ⌛ } @else if (error()) { ❌ } @else { 🕹️ }
+    <!-- Día 4: Grid de Tarjetas de Juego -->
+    @if (loading()) {
+      <div class="home__loading">
+        <div class="spinner"></div>
+        <p class="home__loading-text">Cargando juegos de la base de datos...</p>
       </div>
-      <p class="home__placeholder-text">
-        @if (loading()) {
-          Cargando juegos desde la API...
-        } @else if (error()) {
-          {{ error() }}
-        } @else {
-          Buscador funcionando. Se han encontrado <span class="text-red">{{ games().length }}</span> juegos.<br>
-          <span style="font-size: 0.9rem; opacity: 0.8;">
-            Abre la consola de desarrollo (F12) para ver la lista y la tabla detallada.
-          </span>
+    } @else if (error()) {
+      <div class="home__error">
+        <p class="home__error-text">⚠️ {{ error() }}</p>
+      </div>
+    } @else {
+      <div class="home__grid">
+        @for (game of games(); track game.id) {
+          <app-game-card [game]="game" />
+        } @empty {
+          <div class="home__empty">
+            <div class="home__empty-icon">🕹️</div>
+            <p class="home__empty-text">No se encontraron juegos para esta búsqueda.</p>
+          </div>
         }
-      </p>
-    </div>
+      </div>
+    }
   </div>
 </section>

@@ -3,11 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GamesService } from '../../services/games.service';
 import { Game } from '../../models/game.model';
+import { GameCardComponent } from '../game-card/game-card';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [GameCardComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })

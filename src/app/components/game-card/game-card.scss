@@ -1,0 +1,219 @@
+.game-card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  clip-path: var(--clip-card);
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--c-red);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--c-red-glow);
+
+    .game-card__img {
+      transform: scale(1.08);
+    }
+
+    .game-card__fav-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* MEDIA SECTION */
+  &__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--f-ui);
+    color: var(--c-gray-500);
+    background: var(--c-surface);
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  /* METACRITIC BADGE */
+  &__metacritic {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    z-index: 2;
+
+    &.meta-high {
+      background: rgba(0, 204, 102, 0.15);
+      border-color: #00cc66;
+      color: #00ff88;
+      text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+      box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+    }
+
+    &.meta-mid {
+      background: rgba(255, 170, 0, 0.15);
+      border-color: #ffaa00;
+      color: #ffcc00;
+      text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+    }
+
+    &.meta-low {
+      background: rgba(232, 0, 28, 0.15);
+      border-color: var(--c-red);
+      color: var(--c-red-bright);
+      text-shadow: 0 0 8px var(--c-red-glow);
+      box-shadow: 0 0 10px var(--c-red-glow);
+    }
+  }
+
+  /* FAVORITE BUTTON OVERLAY */
+  &__fav-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(8, 8, 8, 0.7);
+    border: 1px solid var(--c-border);
+    color: var(--c-white);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: var(--transition);
+
+    &:hover {
+      background: var(--c-red);
+      border-color: var(--c-red);
+      color: var(--c-white);
+      box-shadow: 0 0 15px var(--c-red-glow);
+      transform: scale(1.1);
+
+      .heart-icon {
+        content: "♥";
+      }
+    }
+
+    .heart-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+  }
+
+  /* CONTENT SECTION */
+  &__content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 12px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+  }
+
+  &__rating {
+    font-family: var(--f-ui);
+    font-weight: 700;
+    color: var(--c-gray-100);
+    letter-spacing: 0.05em;
+  }
+
+  &__released {
+    font-family: var(--f-body);
+    color: var(--c-gray-500);
+    font-weight: 500;
+  }
+
+  &__title {
+    font-family: var(--f-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--c-white);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 4px 0 2px;
+  }
+
+  &__genres {
+    font-family: var(--f-ui);
+    font-size: 0.85rem;
+    color: var(--c-red-bright);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: auto; /* Pushes footer to the bottom */
+  }
+
+  /* FOOTER */
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--c-border);
+    margin-top: 8px;
+  }
+
+  &__platforms {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__platform-icon {
+    font-size: 0.95rem;
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* COMPACT gamer button variation */
+.btn--compact {
+  padding: 8px 16px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
