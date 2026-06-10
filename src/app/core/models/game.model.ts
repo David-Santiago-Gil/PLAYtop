@@ -18,6 +18,7 @@ export interface Game {
   slug: string;
   background_image: string;
   background_image_additional?: string;
+  price?: number;
   rating: number;
   rating_top: number;
   ratings_count?: number;
@@ -32,6 +33,9 @@ export interface Game {
   developers?: { id: number; name: string }[];
   publishers?: { id: number; name: string }[];
   esrb_rating?: { id: number; name: string; slug: string } | null;
+  ratings?: { id: number; title: string; count: number; percent: number }[];
+  reviews_count?: number;
+  reviews_text_count?: number;
 }
 
 export interface GamesResponse {

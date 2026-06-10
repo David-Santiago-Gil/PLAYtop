@@ -57,9 +57,21 @@
           <!-- Quick stats -->
           <div class="detail__stats">
             <div class="detail__stat">
+              <span class="detail__stat-label">Precio</span>
+              <span class="detail__stat-value" [style.color]="game()!.price === 0 ? '#00ff88' : '#fff'" [style.font-weight]="'800'">
+                {{ game()!.price === 0 ? 'GRATIS' : '$' + game()!.price }}
+              </span>
+            </div>
+            <div class="detail__stat">
               <span class="detail__stat-label">Rating</span>
               <span class="detail__stat-value">Score: {{ game()!.rating }} / 5</span>
             </div>
+            @if (game()!.ratings_count) {
+            <div class="detail__stat">
+              <span class="detail__stat-label">Reseñas</span>
+              <span class="detail__stat-value">{{ game()!.ratings_count | number }} votos</span>
+            </div>
+            }
             @if (game()!.playtime) {
             <div class="detail__stat">
               <span class="detail__stat-label">Tiempo de juego</span>
@@ -156,6 +168,122 @@
             </div>
           </div>
           }
+
+          <!-- ═══════════ RATINGS FROM API ═══════════ -->
+          @if (game()!.ratings && game()!.ratings!.length > 0) {
+          <div class="detail__ratings-section">
+            <div class="detail__divider" aria-hidden="true"></div>
+            <h2 class="detail__section-title">Reseñas de la Comunidad</h2>
+
+            <!-- Summary header -->
+            <div class="detail__ratings-summary">
+              <div class="detail__ratings-score">
+                <span class="detail__ratings-big">{{ game()!.rating }}</span>
+                <span class="detail__ratings-max">/ 5</span>
+              </div>
+              <div class="detail__ratings-count">
+                <span class="detail__ratings-total">{{ totalRatings() | number }}</span>
+                <span class="detail__ratings-label">valoraciones totales</span>
+              </div>
+            </div>
+
+            <!-- Rating bars -->
+            <div class="detail__ratings-bars">
+              @for (r of sortedRatings(); track r.id) {
+              <div class="detail__rating-row">
+                <span class="detail__rating-label">{{ getRatingLabel(r.title) }}</span>
+                <div class="detail__rating-bar-track">
+                  <div class="detail__rating-bar-fill"
+                       [style.width.%]="r.percent"
+                       [style.background]="getRatingColor(r.title)">
+                  </div>
+                </div>
+                <span class="detail__rating-count">{{ r.count | number }}</span>
+                <span class="detail__rating-percent" [style.color]="getRatingColor(r.title)">{{ r.percent }}%</span>
+              </div>
+              }
+            </div>
+          </div>
+          }
+          
+          <!-- ═══════════ RESEÑAS Y COMENTARIOS DEL JUEGO ═══════════ -->
+          <div class="detail__reviews-section">
+            <div class="detail__divider" aria-hidden="true"></div>
+            
+            <div class="detail__reviews-grid">
+              
+              <!-- LEFT: Local User Reviews (Form + List) -->
+              <div class="detail__local-reviews">
+                <h2 class="detail__section-title">Mis Reseñas Locales</h2>
+                
+                <!-- Review Form -->
+                <form class="detail__review-form" (submit)="submitReview(); $event.preventDefault();">
+                  <div class="form-group">
+                    <input type="text" name="userName" [ngModel]="newUserName()" (ngModelChange)="newUserName.set($event)" placeholder="Tu nombre o alias..." class="form-control" />
+                  </div>
+                  <div class="form-group rating-selector">
+                    <label>Tu Calificación:</label>
+                    <div class="stars">
+                      @for (star of [1, 2, 3, 4, 5]; track star) {
+                        <button type="button" class="star-btn" [class.filled]="newRating() >= star" (click)="newRating.set(star)">★</button>
+                      }
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <textarea name="comment" [ngModel]="newComment()" (ngModelChange)="newComment.set($event)" placeholder="Escribe tu reseña sobre el juego..." class="form-control" rows="3" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn--primary btn--submit-review">Enviar Reseña</button>
+                </form>
+
+                <!-- Local Reviews List -->
+                <div class="detail__reviews-list">
+                  @if (localReviews().length === 0) {
+                    <p class="no-reviews">Aún no has escrito ninguna reseña. ¡Sé el primero!</p>
+                  } @else {
+                    @for (rev of localReviews(); track $index) {
+                      <div class="detail__review-card">
+                        <div class="detail__review-header">
+                          <span class="detail__review-author">{{ rev.userName }}</span>
+                          <span class="detail__review-date">{{ rev.date }}</span>
+                        </div>
+                        <div class="detail__review-stars">
+                          @for (s of [1, 2, 3, 4, 5]; track s) {
+                            <span class="star" [class.filled]="rev.rating >= s">★</span>
+                          }
+                        </div>
+                        <p class="detail__review-text">{{ rev.comment }}</p>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+
+              <!-- RIGHT: API Reddit Reviews (Saves space and memory) -->
+              <div class="detail__reddit-reviews">
+                <h2 class="detail__section-title">Comentarios de Reddit (Vía API)</h2>
+                <div class="detail__reddit-list">
+                  @if (redditReviews().length === 0) {
+                    <p class="no-reviews">No hay comentarios de Reddit disponibles para este juego.</p>
+                  } @else {
+                    @for (post of redditReviews().slice(0, 5); track post.id) {
+                      <div class="detail__reddit-card">
+                        <div class="detail__reddit-header">
+                          <span class="detail__reddit-author">u/{{ post.username }}</span>
+                          <span class="detail__reddit-date">{{ post.created | date:'dd MMM yyyy' }}</span>
+                        </div>
+                        <h3 class="detail__reddit-title">{{ post.name }}</h3>
+                        <p class="detail__reddit-text" [innerHTML]="post.text"></p>
+                        @if (post.url) {
+                          <a [href]="post.url" target="_blank" rel="noopener" class="detail__reddit-link">Ver publicación original →</a>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+
+            </div>
+          </div>
 
       </div>
     </div>

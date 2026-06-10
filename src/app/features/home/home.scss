@@ -383,6 +383,97 @@
     color: rgba(255, 255, 255, 0.4);
     letter-spacing: 0.05em;
   }
+
+  /* SECTIONS (Horizontal Scrolling & Headers) */
+  &__section {
+    margin-bottom: 56px;
+    
+    &:first-of-type {
+      margin-top: 32px;
+    }
+  }
+
+  &__section-header {
+    margin-bottom: 24px;
+    border-left: 3px solid var(--color-red);
+    padding-left: 16px;
+  }
+
+  &__section-title {
+    font-family: var(--font-title);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  &__section-subtitle {
+    font-family: var(--font-sub);
+    font-size: 0.95rem;
+    color: var(--color-gray-400);
+  }
+
+  &__row-scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding: 10px 4px 24px;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-red) var(--color-bg-card);
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-red);
+      border-radius: 3px;
+      
+      &:hover {
+        background: #ff334b;
+      }
+    }
+  }
+
+  &__row-item {
+    flex: 0 0 300px;
+    min-width: 300px;
+    height: auto;
+  }
+
+  /* NO MORE PAGES */
+  &__no-more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 48px;
+    margin-top: 36px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    text-align: center;
+  }
+
+  &__no-more-icon {
+    font-size: 2rem;
+    animation: bounce 2s infinite;
+  }
+
+  &__no-more-text {
+    font-family: var(--font-sub);
+    font-size: 1.05rem;
+    color: var(--color-gray-400);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════

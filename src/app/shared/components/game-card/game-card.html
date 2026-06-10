@@ -25,6 +25,13 @@
     <!-- Header: Meta info -->
     <div class="game-card__meta">
       <span class="game-card__rating">★ {{ game.rating }}</span>
+      <span class="game-card__price" [style.color]="game.price === 0 ? 'var(--c-green, #00ff88)' : 'var(--c-white)'" [style.font-weight]="'700'">
+        @if (game.price === 0) {
+          GRATIS
+        } @else {
+          ${{ game.price }}
+        }
+      </span>
       @if (game.released) {
         <span class="game-card__released">{{ game.released | date:'yyyy' }}</span>
       }

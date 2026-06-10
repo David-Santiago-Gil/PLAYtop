@@ -1,6 +1,8 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, HostListener } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DecimalPipe, DatePipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GamesService } from '../../core/services/games.service';
 import { Game } from '../../core/models/game.model';
@@ -19,11 +21,19 @@ export class HomeComponent implements OnInit {
   private gamesService = inject(GamesService);
 
   // ── Signals (estado reactivo) ──────────────────────────
-  games = signal<Game[]>([]);
+  games = signal<Game[]>([]); // Used only for Search results
+  popularGames = signal<Game[]>([]);
+  topRatedGames = signal<Game[]>([]);
+  infiniteGames = signal<Game[]>([]);
+  
   featuredGame = signal<Game | null>(null);
   loading = signal(true);
+  loadingInfinite = signal(false);
   error = signal<string | null>(null);
   searchQuery = signal<string | null>(null);
+
+  currentPage = signal(1);
+  hasMorePages = signal(true);
 
   // ── Computed signals (derivados) ───────────────────────
   resultCount = computed(() => this.games().length);
@@ -49,50 +59,87 @@ export class HomeComponent implements OnInit {
       this.featuredGame.set(null);
     }
 
-    const games$ = query
-      ? this.gamesService.searchGames(query)
-      : this.gamesService.getPopularGames();
-
     if (query) {
       console.log(`🔍 PLAYtop — Buscando juegos con la consulta: "${query}"...`);
+      this.gamesService.searchGames(query).subscribe({
+        next: (response) => {
+          this.games.set(response.results);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Error al buscar juegos');
+          this.loading.set(false);
+        }
+      });
     } else {
-      console.log('🎮 PLAYtop — Cargando los 20 juegos más populares desde RAWG API...');
+      console.log('🎮 PLAYtop — Cargando secciones de inicio (Populares, Valorados y Listado Infinito)...');
+      
+      // Load Popular, Top Rated, and first page of Infinite catalog in parallel
+      forkJoin({
+        popular: this.gamesService.getPopularGames(),
+        topRated: this.gamesService.getTopRatedGames(),
+        allGames: this.gamesService.getAllGames(1, 20)
+      }).subscribe({
+        next: (res) => {
+          this.popularGames.set(res.popular.results);
+          this.topRatedGames.set(res.topRated.results);
+          this.infiniteGames.set(res.allGames.results);
+          this.currentPage.set(1);
+          this.hasMorePages.set(res.allGames.results.length >= 20);
+
+          // Select random game from popular list for featured banner
+          if (res.popular.results.length > 0) {
+            const randomIndex = Math.floor(Math.random() * res.popular.results.length);
+            this.featuredGame.set(res.popular.results[randomIndex]);
+          }
+
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err.message || 'Error al cargar los juegos');
+          this.loading.set(false);
+        }
+      });
+    }
+  }
+
+  loadNextPage(): void {
+    if (this.loadingInfinite() || !this.hasMorePages() || this.isSearching()) {
+      return;
     }
 
-    games$.subscribe({
+    this.loadingInfinite.set(true);
+    const nextPage = this.currentPage() + 1;
+
+    this.gamesService.getAllGames(nextPage, 20).subscribe({
       next: (response) => {
-        this.games.set(response.results);
-        this.loading.set(false);
-
-        // Select a random game for the hero banner if not searching
-        if (!query && response.results.length > 0) {
-          const randomIndex = Math.floor(Math.random() * response.results.length);
-          this.featuredGame.set(response.results[randomIndex]);
+        if (response.results.length > 0) {
+          this.infiniteGames.update(current => [...current, ...response.results]);
+          this.currentPage.set(nextPage);
+          this.hasMorePages.set(response.results.length >= 20);
+        } else {
+          this.hasMorePages.set(false);
         }
-
-        console.log(`✅ Se obtuvieron ${response.results.length} juegos de ${response.count} totales`);
-        console.log(query ? `📋 Resultados de búsqueda para "${query}":` : '📋 Top 20 juegos más populares:');
-
-        response.results.forEach((game, index) => {
-          console.log(
-            `${index + 1}. ${game.name} | ⭐ ${game.rating} | 📅 ${game.released ?? 'N/A'} | 🎮 ${game.genres?.map(g => g.name).join(', ') || 'Sin género'}`
-          );
-        });
-
-        console.table(
-          response.results.map(g => ({
-            Nombre: g.name,
-            Rating: g.rating,
-            Lanzamiento: g.released,
-            Géneros: g.genres?.map(genre => genre.name).join(', ')
-          }))
-        );
+        this.loadingInfinite.set(false);
       },
       error: (err) => {
-        this.error.set(err.message || 'Error al cargar juegos');
-        this.loading.set(false);
-        console.error('❌ Error al cargar juegos:', err.message);
+        console.error('Error loading next page for infinite scroll:', err);
+        this.loadingInfinite.set(false);
       }
     });
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    if (this.isSearching() || this.loading() || this.error()) return;
+
+    // Trigger load when page is scrolled close to the bottom (within 200px)
+    const threshold = 200;
+    const position = window.scrollY + window.innerHeight;
+    const height = document.documentElement.scrollHeight;
+
+    if (position >= height - threshold) {
+      this.loadNextPage();
+    }
   }
 }

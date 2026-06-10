@@ -3,7 +3,7 @@
   <!-- ══════════════════════════════════════════════ -->
   <!-- HERO BANNER: Portada con juego aleatorio       -->
   <!-- ══════════════════════════════════════════════ -->
-  @if (!isSearching() && featuredGame()) {
+  @if (!isSearching() && featuredGame() && !loading() && !error()) {
     <div class="featured-banner" [style.--bg]="'url(' + featuredGame()!.background_image + ')'">
       <!-- Background layers -->
       <div class="featured-banner__bg"></div>
@@ -65,44 +65,24 @@
   }
 
   <!-- ══════════════════════════════════════════════ -->
-  <!-- SECTION HEADER                                 -->
+  <!-- MAIN CONTENT CONTAINER                         -->
   <!-- ══════════════════════════════════════════════ -->
   <div class="container">
-    <div class="home__hero fade-in-up">
-      @if (isSearching()) {
-        <h2 class="home__title">
-          Resultados para: <span class="text-red">"{{ searchQuery() }}"</span>
-        </h2>
-        <p class="home__subtitle">
-          @if (!loading() && hasResults()) {
-            Se encontraron <span class="text-red">{{ resultCount() }}</span> juegos
-          } @else if (!loading() && isEmpty()) {
-            Sin resultados para esta búsqueda
-          } @else {
-            Buscando en la base de datos...
-          }
-        </p>
-      } @else {
-        <h2 class="home__title">
-          Top <span class="text-red">20</span> Juegos Más Jugados
-        </h2>
-        <p class="home__subtitle">
-          Los mejores juegos del momento — ordenados por rating global
-        </p>
-      }
-    </div>
-
-    <!-- ══════════════════════════════════════════════ -->
-    <!-- GAMES GRID / SKELETON / ERROR / EMPTY          -->
-    <!-- ══════════════════════════════════════════════ -->
-
-    <!-- LOADING: Skeleton Loader -->
+    
+    <!-- LOADING state -->
     @if (loading()) {
+      <div class="home__hero fade-in-up">
+        <h2 class="home__title">Cargando <span class="text-red">PLAYtop</span>...</h2>
+        <p class="home__subtitle">Preparando la experiencia gaming definitiva...</p>
+      </div>
       <app-loading-skeleton [count]="8" />
     }
 
-    <!-- ERROR: API failure -->
+    <!-- ERROR state -->
     @else if (error()) {
+      <div class="home__hero fade-in-up">
+        <h2 class="home__title">¡Ocurrió un <span class="text-red">Error</span>!</h2>
+      </div>
       <div class="home__error fade-in-up">
         <div class="home__error-content">
           <span class="home__error-icon">⚠️</span>
@@ -112,28 +92,101 @@
       </div>
     }
 
-    <!-- EMPTY: No results -->
-    @else if (isEmpty()) {
-      <div class="home__empty fade-in-up">
-        <span class="home__empty-icon">🎮</span>
-        @if (isSearching()) {
+    <!-- SEARCH VIEW -->
+    @else if (isSearching()) {
+      <div class="home__hero fade-in-up">
+        <h2 class="home__title">
+          Resultados para: <span class="text-red">"{{ searchQuery() }}"</span>
+        </h2>
+        <p class="home__subtitle">
+          @if (hasResults()) {
+            Se encontraron <span class="text-red">{{ resultCount() }}</span> juegos
+          } @else {
+            Sin resultados para esta búsqueda
+          }
+        </p>
+      </div>
+
+      @if (hasResults()) {
+        <div class="home__grid">
+          @for (game of games(); track game.id) {
+            <app-game-card [game]="game" />
+          }
+        </div>
+      } @else {
+        <div class="home__empty fade-in-up">
+          <span class="home__empty-icon">🎮</span>
           <p class="home__empty-text">
             Sin resultados para "<span class="text-red">{{ searchQuery() }}</span>". Intenta otro título.
           </p>
-        } @else {
-          <p class="home__empty-text">No se encontraron juegos en este momento.</p>
-        }
-        <a routerLink="/" class="btn btn--outline">Volver al inicio</a>
-      </div>
+          <a routerLink="/" class="btn btn--outline">Volver al inicio</a>
+        </div>
+      }
     }
 
-    <!-- SUCCESS: Game cards grid -->
+    <!-- DEFAULT HOME VIEW (HORIZONTAL ROWS + INFINITE SCROLL) -->
     @else {
-      <div class="home__grid">
-        @for (game of games(); track game.id) {
-          <app-game-card [game]="game" />
+      
+      <!-- ROW 1: MOST PLAYED -->
+      <div class="home__section fade-in-up">
+        <div class="home__section-header">
+          <h2 class="home__section-title">Los <span class="text-red">20 Más Jugados</span></h2>
+          <p class="home__section-subtitle">Los títulos más populares elegidos por la comunidad gaming</p>
+        </div>
+        <div class="home__row-scroll">
+          @for (game of popularGames(); track game.id) {
+            <div class="home__row-item">
+              <app-game-card [game]="game" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- ROW 2: BEST RATED -->
+      <div class="home__section fade-in-up">
+        <div class="home__section-header">
+          <h2 class="home__section-title">Los <span class="text-red">Mejor Valorados</span></h2>
+          <p class="home__section-subtitle">Juegos con excelentes reseñas y puntajes de crítica</p>
+        </div>
+        <div class="home__row-scroll">
+          @for (game of topRatedGames(); track game.id) {
+            <div class="home__row-item">
+              <app-game-card [game]="game" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- GRID: INFINITE SCROLL CATALOGUE -->
+      <div class="home__section fade-in-up">
+        <div class="home__section-header">
+          <h2 class="home__section-title">Catálogo de <span class="text-red">Juegos</span></h2>
+          <p class="home__section-subtitle">Explora toda nuestra base de datos con scroll infinito</p>
+        </div>
+
+        <div class="home__grid">
+          @for (game of infiniteGames(); track game.id) {
+            <app-game-card [game]="game" />
+          }
+        </div>
+
+        <!-- INFINITE LOADER SKELETON -->
+        @if (loadingInfinite()) {
+          <div style="margin-top: 24px;">
+            <app-loading-skeleton [count]="4" />
+          </div>
+        }
+
+        <!-- NO MORE PAGES BADGE -->
+        @if (!hasMorePages()) {
+          <div class="home__no-more fade-in-up">
+            <span class="home__no-more-icon">🎮</span>
+            <p class="home__no-more-text">Has llegado al final de la base de datos de juegos</p>
+          </div>
         }
       </div>
+
     }
+
   </div>
 </section>
