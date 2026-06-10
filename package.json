@@ -3,9 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "prebuild": "node scripts/set-env.js",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "node set-env.js && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:playtop": "node dist/playtop/server/server.mjs"
