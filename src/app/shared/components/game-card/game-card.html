@@ -6,17 +6,17 @@
     } @else {
       <div class="game-card__img-placeholder">No Image</div>
     }
-    
+
     <!-- Metacritic Score Badge -->
     @if (game.metacritic) {
-      <div class="game-card__metacritic" [ngClass]="getMetacriticColor(game.metacritic)">
+      <div class="game-card__metacritic" [class]="getMetacriticColor(game.metacritic)">
         {{ game.metacritic }}
       </div>
     }
 
     <!-- Favorite Button overlay -->
-    <button class="game-card__fav-btn" aria-label="Agregar a favoritos">
-      <span class="heart-icon">♡</span>
+    <button class="game-card__fav-btn" [class.active]="isFavorite()" (click)="toggleFavorite($event)" aria-label="Agregar a favoritos">
+      <span class="heart-icon">{{ isFavorite() ? '♥' : '♡' }}</span>
     </button>
   </div>
 
@@ -24,8 +24,10 @@
   <div class="game-card__content">
     <!-- Header: Meta info -->
     <div class="game-card__meta">
-      <span class="game-card__rating">Rating: {{ game.rating }}</span>
-      <span class="game-card__released" *ngIf="game.released">{{ game.released | date:'yyyy' }}</span>
+      <span class="game-card__rating">★ {{ game.rating }}</span>
+      @if (game.released) {
+        <span class="game-card__released">{{ game.released | date:'yyyy' }}</span>
+      }
     </div>
 
     <!-- Title -->
@@ -33,20 +35,20 @@
 
     <!-- Genres -->
     <p class="game-card__genres">
-      <span *ngFor="let genre of game.genres | slice:0:3; let last = last">
-        {{ genre.name }}{{ !last ? ', ' : '' }}
-      </span>
+      @for (genre of game.genres.slice(0, 3); track genre.id; let last = $last) {
+        <span>{{ genre.name }}{{ !last ? ', ' : '' }}</span>
+      }
     </p>
 
     <!-- Footer: Platforms + Action Button -->
     <div class="game-card__footer">
       <!-- Platform icons list -->
       <div class="game-card__platforms">
-        <span *ngFor="let slug of getUniquePlatforms()" 
-              [title]="slug" 
-              class="game-card__platform-icon">
-          {{ getPlatformIcon(slug) }}
-        </span>
+        @for (slug of getUniquePlatforms(); track slug) {
+          <span [title]="slug" class="game-card__platform-icon">
+            {{ getPlatformIcon(slug) }}
+          </span>
+        }
       </div>
 
       <!-- Action Button (Gamer Button) -->

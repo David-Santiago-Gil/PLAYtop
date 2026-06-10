@@ -1,17 +1,34 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { Game } from '../../../core/models/game.model';
-import { CommonModule } from '@angular/common';
+import { FavoritesService } from '../../../core/services/favorites.service';
 
 @Component({
   selector: 'app-game-card',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [DatePipe, RouterLink],
   templateUrl: './game-card.html',
   styleUrl: './game-card.scss'
 })
 export class GameCardComponent {
   @Input({ required: true }) game!: Game;
+
+  private favoritesService = inject(FavoritesService);
+
+  isFavorite(): boolean {
+    return this.favoritesService.isFavorite(this.game.id);
+  }
+
+  toggleFavorite(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.isFavorite()) {
+      this.favoritesService.removeFavorite(this.game.id);
+    } else {
+      this.favoritesService.addFavorite(this.game);
+    }
+  }
 
   getMetacriticColor(score: number | null): string {
     if (!score) return 'meta-none';

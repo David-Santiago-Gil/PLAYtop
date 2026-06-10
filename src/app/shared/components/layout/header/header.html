@@ -19,7 +19,7 @@
       <!-- Desktop Search Bar -->
       <form class="header__search" (submit)="onSearch($event, searchVal.value)">
         <input #searchVal type="text" placeholder="Buscar juego..." class="header__search-input" />
-        <button type="submit" class="header__search-btn" aria-label="Buscar"></button>
+        <button type="submit" class="header__search-btn" aria-label="Buscar">🔍</button>
       </form>
     </nav>
 
@@ -35,6 +35,12 @@
   <!-- MOBILE MENU -->
   @if (menuOpen()) {
   <nav class="header__mobile-nav" role="navigation" aria-label="Menú móvil">
+    <!-- Mobile Search Bar -->
+    <form class="header__mobile-search" (submit)="onSearch($event, mobileSearchVal.value)">
+      <input #mobileSearchVal type="text" placeholder="Buscar juego..." class="header__mobile-search-input" />
+      <button type="submit" class="header__mobile-search-btn" aria-label="Buscar">🔍</button>
+    </form>
+
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="header__mobile-link"
       (click)="closeMenu()">
       Home

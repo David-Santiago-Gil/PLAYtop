@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { GamesService } from '../../core/services/games.service';
 import { Game } from '../../core/models/game.model';
+import { FavoritesService } from '../../core/services/favorites.service';
 
 @Component({
   selector: 'app-game-detail',
@@ -14,10 +15,26 @@ import { Game } from '../../core/models/game.model';
 export class GameDetailComponent implements OnInit {
   private route   = inject(ActivatedRoute);
   private service = inject(GamesService);
+  private favoritesService = inject(FavoritesService);
 
   game    = signal<Game | null>(null);
   loading = signal(true);
   error   = signal<string | null>(null);
+
+  isFavorite(): boolean {
+    const game = this.game();
+    return game ? this.favoritesService.isFavorite(game.id) : false;
+  }
+
+  toggleFavorite(): void {
+    const game = this.game();
+    if (!game) return;
+    if (this.isFavorite()) {
+      this.favoritesService.removeFavorite(game.id);
+    } else {
+      this.favoritesService.addFavorite(game);
+    }
+  }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));

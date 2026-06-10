@@ -3,7 +3,7 @@
   <!-- ══════════════════════════════════════════════ -->
   <!-- HERO BANNER: Portada con juego aleatorio       -->
   <!-- ══════════════════════════════════════════════ -->
-  @if (!searchQuery() && featuredGame()) {
+  @if (!isSearching() && featuredGame()) {
     <div class="featured-banner" [style.--bg]="'url(' + featuredGame()!.background_image + ')'">
       <!-- Background layers -->
       <div class="featured-banner__bg"></div>
@@ -69,12 +69,18 @@
   <!-- ══════════════════════════════════════════════ -->
   <div class="container">
     <div class="home__hero fade-in-up">
-      @if (searchQuery()) {
+      @if (isSearching()) {
         <h2 class="home__title">
           Resultados para: <span class="text-red">"{{ searchQuery() }}"</span>
         </h2>
         <p class="home__subtitle">
-          Búsqueda realizada con éxito en la API
+          @if (!loading() && hasResults()) {
+            Se encontraron <span class="text-red">{{ resultCount() }}</span> juegos
+          } @else if (!loading() && isEmpty()) {
+            Sin resultados para esta búsqueda
+          } @else {
+            Buscando en la base de datos...
+          }
         </p>
       } @else {
         <h2 class="home__title">
@@ -87,25 +93,45 @@
     </div>
 
     <!-- ══════════════════════════════════════════════ -->
-    <!-- GAMES GRID                                     -->
+    <!-- GAMES GRID / SKELETON / ERROR / EMPTY          -->
     <!-- ══════════════════════════════════════════════ -->
+
+    <!-- LOADING: Skeleton Loader -->
     @if (loading()) {
-      <div class="home__loading">
-        <div class="spinner"></div>
-        <p class="home__loading-text">Cargando juegos de la base de datos...</p>
+      <app-loading-skeleton [count]="8" />
+    }
+
+    <!-- ERROR: API failure -->
+    @else if (error()) {
+      <div class="home__error fade-in-up">
+        <div class="home__error-content">
+          <span class="home__error-icon">⚠️</span>
+          <p class="home__error-text">{{ error() }}</p>
+          <p class="home__error-hint">Conexión fallida. ¿Problema con la red?</p>
+        </div>
       </div>
-    } @else if (error()) {
-      <div class="home__error">
-        <p class="home__error-text">ERROR: {{ error() }}</p>
+    }
+
+    <!-- EMPTY: No results -->
+    @else if (isEmpty()) {
+      <div class="home__empty fade-in-up">
+        <span class="home__empty-icon">🎮</span>
+        @if (isSearching()) {
+          <p class="home__empty-text">
+            Sin resultados para "<span class="text-red">{{ searchQuery() }}</span>". Intenta otro título.
+          </p>
+        } @else {
+          <p class="home__empty-text">No se encontraron juegos en este momento.</p>
+        }
+        <a routerLink="/" class="btn btn--outline">Volver al inicio</a>
       </div>
-    } @else {
+    }
+
+    <!-- SUCCESS: Game cards grid -->
+    @else {
       <div class="home__grid">
         @for (game of games(); track game.id) {
           <app-game-card [game]="game" />
-        } @empty {
-          <div class="home__empty">
-            <p class="home__empty-text">No se encontraron juegos para esta búsqueda.</p>
-          </div>
         }
       </div>
     }

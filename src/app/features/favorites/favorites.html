@@ -9,10 +9,18 @@
       </p>
     </div>
 
-    <!-- Día 7: aquí irá la lista con FavoritesService -->
-    <div class="favorites__empty fade-in-up">
-      <p class="favorites__empty-text">¡Tu lista está vacía! Explora y agrega juegos</p>
-      <a routerLink="/" class="btn btn--primary">Explorar juegos</a>
-    </div>
+    @if (favoriteGames().length > 0) {
+      <div class="favorites__grid fade-in-up">
+        @for (game of favoriteGames(); track game.id) {
+          <app-game-card [game]="game" />
+        }
+      </div>
+    } @else {
+      <div class="favorites__empty fade-in-up">
+        <span class="favorites__empty-icon">💔</span>
+        <p class="favorites__empty-text">¡Tu lista está vacía! Explora y agrega juegos</p>
+        <a routerLink="/" class="btn btn--primary">Explorar juegos</a>
+      </div>
+    }
   </div>
 </section>

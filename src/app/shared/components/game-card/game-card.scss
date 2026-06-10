@@ -130,6 +130,15 @@
     transform: scale(0.85);
     transition: var(--transition);
 
+    &.active {
+      opacity: 1;
+      transform: scale(1);
+      background: var(--c-red);
+      border-color: var(--c-red);
+      color: var(--c-white);
+      box-shadow: 0 0 10px var(--c-red-glow);
+    }
+
     &:hover {
       background: var(--c-red);
       border-color: var(--c-red);

@@ -80,12 +80,18 @@
             }
           </div>
 
-          <!-- Website link -->
-          @if (game()!.website) {
-          <a [href]="game()!.website" target="_blank" rel="noopener" class="btn btn--outline detail__website-btn">
-            Sitio oficial
-          </a>
-          }
+          <!-- Website & Favorite actions -->
+          <div class="detail__actions">
+            @if (game()!.website) {
+            <a [href]="game()!.website" target="_blank" rel="noopener" class="btn btn--outline detail__website-btn">
+              Sitio oficial
+            </a>
+            }
+            <button class="btn btn--primary detail__fav-btn" [class.is-fav]="isFavorite()" (click)="toggleFavorite()">
+              <span class="heart-icon">{{ isFavorite() ? '♥' : '♡' }}</span>
+              {{ isFavorite() ? 'Quitar de favoritos' : 'Añadir a favoritos' }}
+            </button>
+          </div>
         </aside>
 
         <!-- RIGHT: Details -->

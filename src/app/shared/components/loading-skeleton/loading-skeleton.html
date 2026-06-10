@@ -1,0 +1,39 @@
+<div class="skeleton-grid">
+  @for (card of skeletonCards; track card) {
+    <div class="skeleton-card" [style.animation-delay]="card * 0.08 + 's'">
+      <!-- Image placeholder -->
+      <div class="skeleton-card__media">
+        <div class="skeleton-pulse"></div>
+        <!-- Fake metacritic badge -->
+        <div class="skeleton-card__badge">
+          <div class="skeleton-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Content placeholders -->
+      <div class="skeleton-card__content">
+        <!-- Meta row -->
+        <div class="skeleton-card__meta">
+          <div class="skeleton-line skeleton-line--xs skeleton-pulse"></div>
+          <div class="skeleton-line skeleton-line--xs skeleton-pulse"></div>
+        </div>
+
+        <!-- Title -->
+        <div class="skeleton-line skeleton-line--lg skeleton-pulse"></div>
+
+        <!-- Genres -->
+        <div class="skeleton-line skeleton-line--md skeleton-pulse"></div>
+
+        <!-- Footer -->
+        <div class="skeleton-card__footer">
+          <div class="skeleton-card__platforms-row">
+            <div class="skeleton-chip skeleton-pulse"></div>
+            <div class="skeleton-chip skeleton-pulse"></div>
+            <div class="skeleton-chip skeleton-pulse"></div>
+          </div>
+          <div class="skeleton-btn skeleton-pulse"></div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

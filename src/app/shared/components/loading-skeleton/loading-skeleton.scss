@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════
+   LOADING SKELETON — Dark gamer-style skeleton cards
+   ═══════════════════════════════════════════════════════════ */
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 24px;
+}
+
+/* ---- Card Skeleton ---- */
+.skeleton-card {
+  background: var(--c-bg-card, #111111);
+  border: 1px solid var(--c-border, #242424);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  overflow: hidden;
+  opacity: 0;
+  animation: skeletonFadeIn 0.4s ease forwards;
+
+  &__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--c-surface, #181818);
+    overflow: hidden;
+
+    > .skeleton-pulse {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 28px;
+    border-radius: 4px;
+    overflow: hidden;
+
+    .skeleton-pulse {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__content {
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__platforms-row {
+    display: flex;
+    gap: 6px;
+  }
+}
+
+/* ---- Skeleton Lines ---- */
+.skeleton-line {
+  height: 14px;
+  border-radius: 3px;
+
+  &--xs {
+    width: 50px;
+    height: 12px;
+  }
+
+  &--md {
+    width: 65%;
+    height: 12px;
+  }
+
+  &--lg {
+    width: 80%;
+    height: 18px;
+  }
+}
+
+.skeleton-chip {
+  width: 32px;
+  height: 24px;
+  border-radius: 3px;
+}
+
+.skeleton-btn {
+  width: 110px;
+  height: 36px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+
+/* ---- Pulse Animation ---- */
+.skeleton-pulse {
+  background: linear-gradient(
+    110deg,
+    var(--c-surface, #181818) 0%,
+    var(--c-surface, #181818) 35%,
+    rgba(232, 0, 28, 0.06) 50%,
+    var(--c-surface, #181818) 65%,
+    var(--c-surface, #181818) 100%
+  );
+  background-size: 300% 100%;
+  animation: skeletonShimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@keyframes skeletonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

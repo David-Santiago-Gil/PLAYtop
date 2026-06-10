@@ -237,10 +237,40 @@
     text-align: right;
   }
 
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   &__website-btn {
     width: 100%;
     justify-content: center;
     font-size: 0.85rem;
+  }
+
+  &__fav-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &.is-fav {
+      background: var(--c-red-soft);
+      border-color: var(--c-red);
+      color: var(--c-white);
+      
+      &:hover {
+        background: var(--c-red);
+        box-shadow: 0 0 15px var(--c-red-glow);
+      }
+    }
+
+    .heart-icon {
+      font-size: 1rem;
+    }
   }
 
   /* ─── MAIN ─── */

@@ -1,17 +1,16 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DecimalPipe, DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GamesService } from '../../core/services/games.service';
 import { Game } from '../../core/models/game.model';
 import { GameCardComponent } from '../../shared/components/game-card/game-card';
-
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton/loading-skeleton';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [GameCardComponent, RouterLink, CommonModule],
+  imports: [GameCardComponent, LoadingSkeletonComponent, RouterLink, DecimalPipe, DatePipe],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
@@ -19,11 +18,18 @@ export class HomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private gamesService = inject(GamesService);
 
+  // ── Signals (estado reactivo) ──────────────────────────
   games = signal<Game[]>([]);
   featuredGame = signal<Game | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
   searchQuery = signal<string | null>(null);
+
+  // ── Computed signals (derivados) ───────────────────────
+  resultCount = computed(() => this.games().length);
+  hasResults  = computed(() => this.games().length > 0);
+  isEmpty     = computed(() => !this.loading() && !this.error() && this.games().length === 0);
+  isSearching = computed(() => !!this.searchQuery());
 
   constructor() {
     // Listen to query parameters to reload games when a search is triggered
