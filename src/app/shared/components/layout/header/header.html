@@ -19,42 +19,36 @@
       <!-- Desktop Search Bar with Autocomplete -->
       <div class="header__search-wrap">
         <form class="header__search" (submit)="onSearch($event, searchVal.value)">
-          <input #searchVal type="text" placeholder="Buscar juego..."
-                 class="header__search-input"
-                 autocomplete="off"
-                 (input)="onSearchInput(searchVal.value)"
-                 (keydown)="onKeydown($event)"
-                 (blur)="closeSuggestions()"
-                 (focus)="searchVal.value.length >= 3 && suggestions().length > 0 ? showSuggestions.set(true) : null" />
+          <input #searchVal type="text" placeholder="Buscar juego..." class="header__search-input" autocomplete="off"
+            (input)="onSearchInput(searchVal.value)" (keydown)="onKeydown($event)" (blur)="closeSuggestions()"
+            (focus)="searchVal.value.length >= 3 && suggestions().length > 0 ? showSuggestions.set(true) : null" />
           @if (searchLoading()) {
-            <span class="header__search-loader"></span>
+          <span class="header__search-loader"></span>
           } @else {
-            <button type="submit" class="header__search-btn" aria-label="Buscar">🔍</button>
+          <button type="submit" class="header__search-btn" aria-label="Buscar"></button>
           }
         </form>
 
         <!-- Autocomplete Dropdown -->
         @if (showSuggestions() && suggestions().length > 0) {
-          <div class="header__suggestions" role="listbox">
-            @for (game of suggestions(); track game.id; let i = $index) {
-              <div class="header__suggestion-item"
-                   [class.active]="activeIndex() === i"
-                   role="option"
-                   (mousedown)="selectSuggestion(game)">
-                @if (game.background_image) {
-                  <img [src]="game.background_image" [alt]="game.name" class="header__suggestion-img" loading="lazy" />
-                } @else {
-                  <div class="header__suggestion-img header__suggestion-img--placeholder">🎮</div>
-                }
-                <div class="header__suggestion-info">
-                  <span class="header__suggestion-name">{{ game.name }}</span>
-                  @if (game.released) {
-                    <span class="header__suggestion-year">{{ game.released.substring(0, 4) }}</span>
-                  }
-                </div>
-              </div>
+        <div class="header__suggestions" role="listbox">
+          @for (game of suggestions(); track game.id; let i = $index) {
+          <div class="header__suggestion-item" [class.active]="activeIndex() === i" role="option"
+            (mousedown)="selectSuggestion(game)">
+            @if (game.background_image) {
+            <img [src]="game.background_image" [alt]="game.name" class="header__suggestion-img" loading="lazy" />
+            } @else {
+            <div class="header__suggestion-img header__suggestion-img--placeholder">🎮</div>
             }
+            <div class="header__suggestion-info">
+              <span class="header__suggestion-name">{{ game.name }}</span>
+              @if (game.released) {
+              <span class="header__suggestion-year">{{ game.released.substring(0, 4) }}</span>
+              }
+            </div>
           </div>
+          }
+        </div>
         }
       </div>
     </nav>
@@ -74,41 +68,36 @@
     <!-- Mobile Search Bar with Autocomplete -->
     <div class="header__mobile-search-wrap">
       <form class="header__mobile-search" (submit)="onSearch($event, mobileSearchVal.value)">
-        <input #mobileSearchVal type="text" placeholder="Buscar juego..."
-               class="header__mobile-search-input"
-               autocomplete="off"
-               (input)="onSearchInput(mobileSearchVal.value)"
-               (keydown)="onKeydown($event)"
-               (blur)="closeSuggestions()" />
+        <input #mobileSearchVal type="text" placeholder="Buscar juego..." class="header__mobile-search-input"
+          autocomplete="off" (input)="onSearchInput(mobileSearchVal.value)" (keydown)="onKeydown($event)"
+          (blur)="closeSuggestions()" />
         @if (searchLoading()) {
-          <span class="header__mobile-search-loader"></span>
+        <span class="header__mobile-search-loader"></span>
         } @else {
-          <button type="submit" class="header__mobile-search-btn" aria-label="Buscar">🔍</button>
+        <button type="submit" class="header__mobile-search-btn" aria-label="Buscar">🔍</button>
         }
       </form>
 
       <!-- Mobile Autocomplete Dropdown -->
       @if (showSuggestions() && suggestions().length > 0) {
-        <div class="header__suggestions header__suggestions--mobile" role="listbox">
-          @for (game of suggestions(); track game.id; let i = $index) {
-            <div class="header__suggestion-item"
-                 [class.active]="activeIndex() === i"
-                 role="option"
-                 (mousedown)="selectSuggestion(game)">
-              @if (game.background_image) {
-                <img [src]="game.background_image" [alt]="game.name" class="header__suggestion-img" loading="lazy" />
-              } @else {
-                <div class="header__suggestion-img header__suggestion-img--placeholder">🎮</div>
-              }
-              <div class="header__suggestion-info">
-                <span class="header__suggestion-name">{{ game.name }}</span>
-                @if (game.released) {
-                  <span class="header__suggestion-year">{{ game.released.substring(0, 4) }}</span>
-                }
-              </div>
-            </div>
+      <div class="header__suggestions header__suggestions--mobile" role="listbox">
+        @for (game of suggestions(); track game.id; let i = $index) {
+        <div class="header__suggestion-item" [class.active]="activeIndex() === i" role="option"
+          (mousedown)="selectSuggestion(game)">
+          @if (game.background_image) {
+          <img [src]="game.background_image" [alt]="game.name" class="header__suggestion-img" loading="lazy" />
+          } @else {
+          <div class="header__suggestion-img header__suggestion-img--placeholder">🎮</div>
           }
+          <div class="header__suggestion-info">
+            <span class="header__suggestion-name">{{ game.name }}</span>
+            @if (game.released) {
+            <span class="header__suggestion-year">{{ game.released.substring(0, 4) }}</span>
+            }
+          </div>
         </div>
+        }
+      </div>
       }
     </div>
 

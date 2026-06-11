@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { GameCardComponent } from '../../shared/components/game-card/game-card';
@@ -8,7 +8,8 @@ import { GameCardComponent } from '../../shared/components/game-card/game-card';
   standalone: true,
   imports: [GameCardComponent, RouterLink],
   templateUrl: './favorites.html',
-  styleUrl: './favorites.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './favorites.scss',
 })
 export class FavoritesComponent {
   private favoritesService = inject(FavoritesService);

@@ -1,4 +1,12 @@
-import { Component, signal, HostListener, inject, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  signal,
+  HostListener,
+  inject,
+  ElementRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -12,7 +20,8 @@ import { Game } from '../../../../core/models/game.model';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './header.html',
-  styleUrl: './header.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './header.scss',
 })
 export class HeaderComponent {
   private router = inject(Router);
@@ -31,25 +40,27 @@ export class HeaderComponent {
   private searchSubject = new Subject<string>();
 
   constructor() {
-    this.searchSubject.pipe(
-      takeUntilDestroyed(),
-      debounceTime(300),
-      distinctUntilChanged(),
-      filter(query => query.length >= 3),
-      switchMap(query => {
-        this.searchLoading.set(true);
-        return this.gamesService.searchSuggestions(query);
-      })
-    ).subscribe(results => {
-      this.suggestions.set(results);
-      this.showSuggestions.set(results.length > 0);
-      this.searchLoading.set(false);
-      this.activeIndex.set(-1);
-    });
+    this.searchSubject
+      .pipe(
+        takeUntilDestroyed(),
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((query) => query.length >= 3),
+        switchMap((query) => {
+          this.searchLoading.set(true);
+          return this.gamesService.searchSuggestions(query);
+        }),
+      )
+      .subscribe((results) => {
+        this.suggestions.set(results);
+        this.showSuggestions.set(results.length > 0);
+        this.searchLoading.set(false);
+        this.activeIndex.set(-1);
+      });
   }
 
   toggleMenu(): void {
-    this.menuOpen.update(v => !v);
+    this.menuOpen.update((v) => !v);
   }
 
   closeMenu(): void {
@@ -87,10 +98,10 @@ export class HeaderComponent {
 
     if (event.key === 'ArrowDown') {
       event.preventDefault();
-      this.activeIndex.update(i => (i + 1) % list.length);
+      this.activeIndex.update((i) => (i + 1) % list.length);
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
-      this.activeIndex.update(i => (i - 1 + list.length) % list.length);
+      this.activeIndex.update((i) => (i - 1 + list.length) % list.length);
     } else if (event.key === 'Enter') {
       event.preventDefault();
       const targetGame = this.activeIndex() >= 0 ? list[this.activeIndex()] : list[0];

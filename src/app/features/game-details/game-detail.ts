@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { GamesService } from '../../core/services/games.service';
@@ -12,18 +19,19 @@ import { ReviewsService, Review } from '../../core/services/reviews.service';
   standalone: true,
   imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './game-detail.html',
-  styleUrl: './game-detail.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './game-detail.scss',
 })
 export class GameDetailComponent implements OnInit {
-  private route   = inject(ActivatedRoute);
+  private route = inject(ActivatedRoute);
   private service = inject(GamesService);
   private favoritesService = inject(FavoritesService);
   reviewsService = inject(ReviewsService);
 
-  game    = signal<Game | null>(null);
+  game = signal<Game | null>(null);
   loading = signal(true);
-  error   = signal<string | null>(null);
-  
+  error = signal<string | null>(null);
+
   // Reddit & User Reviews signals
   redditReviews = signal<any[]>([]);
   newUserName = signal('');
@@ -82,10 +90,10 @@ export class GameDetailComponent implements OnInit {
       error: (err) => {
         this.error.set(err.message || 'Error al cargar el juego.');
         this.loading.set(false);
-      }
+      },
     });
 
-    this.service.getGameRedditPosts(id).subscribe(posts => {
+    this.service.getGameRedditPosts(id).subscribe((posts) => {
       this.redditReviews.set(posts);
     });
   }
@@ -104,8 +112,8 @@ export class GameDetailComponent implements OnInit {
       date: new Date().toLocaleDateString('es-ES', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric'
-      })
+        year: 'numeric',
+      }),
     };
 
     this.reviewsService.addReview(game.id, review);
@@ -123,20 +131,20 @@ export class GameDetailComponent implements OnInit {
 
   getRatingLabel(title: string): string {
     const labels: Record<string, string> = {
-      'exceptional': '🏆 Excepcional',
-      'recommended': '👍 Recomendado',
-      'meh': '😐 Regular',
-      'skip': '👎 Evitar'
+      exceptional: '🏆 Excepcional',
+      recommended: '👍 Recomendado',
+      meh: '😐 Regular',
+      skip: '👎 Evitar',
     };
     return labels[title] || title;
   }
 
   getRatingColor(title: string): string {
     const colors: Record<string, string> = {
-      'exceptional': '#00ff88',
-      'recommended': '#4dabf7',
-      'meh': '#ffd43b',
-      'skip': '#ff6b6b'
+      exceptional: '#00ff88',
+      recommended: '#4dabf7',
+      meh: '#ffd43b',
+      skip: '#ff6b6b',
     };
     return colors[title] || '#888';
   }

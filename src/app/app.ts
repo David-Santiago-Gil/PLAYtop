@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/layout/header/header';
 
@@ -12,6 +12,7 @@ import { HeaderComponent } from './shared/components/layout/header/header';
       <router-outlet />
     </main>
   `,
-  styles: []
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styles: [],
 })
 export class App {}

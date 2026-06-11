@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Game } from '../../../core/models/game.model';
@@ -9,7 +9,8 @@ import { FavoritesService } from '../../../core/services/favorites.service';
   standalone: true,
   imports: [DatePipe, RouterLink],
   templateUrl: './game-card.html',
-  styleUrl: './game-card.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './game-card.scss',
 })
 export class GameCardComponent {
   @Input({ required: true }) game!: Game;
@@ -65,7 +66,7 @@ export class GameCardComponent {
   // Helper to extract top platforms to avoid showing too many
   getUniquePlatforms(): string[] {
     if (!this.game.platforms) return [];
-    const slugs = this.game.platforms.map(p => {
+    const slugs = this.game.platforms.map((p) => {
       const parent = p.platform.slug;
       if (parent.includes('playstation')) return 'playstation';
       if (parent.includes('xbox')) return 'xbox';

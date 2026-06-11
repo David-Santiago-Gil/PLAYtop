@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-loading-skeleton',
   standalone: true,
   imports: [],
   templateUrl: './loading-skeleton.html',
-  styleUrl: './loading-skeleton.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './loading-skeleton.scss',
 })
 export class LoadingSkeletonComponent {
   @Input() count: number = 8;

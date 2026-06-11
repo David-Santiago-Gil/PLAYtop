@@ -1,4 +1,12 @@
-import { Component, inject, OnInit, signal, computed, HostListener } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  HostListener,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
@@ -14,7 +22,8 @@ import { LoadingSkeletonComponent } from '../../shared/components/loading-skelet
   standalone: true,
   imports: [GameCardComponent, LoadingSkeletonComponent, RouterLink, DecimalPipe, DatePipe],
   templateUrl: './home.html',
-  styleUrl: './home.scss'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './home.scss',
 })
 export class HomeComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -25,7 +34,7 @@ export class HomeComponent implements OnInit {
   popularGames = signal<Game[]>([]);
   topRatedGames = signal<Game[]>([]);
   infiniteGames = signal<Game[]>([]);
-  
+
   featuredGame = signal<Game | null>(null);
   loading = signal(true);
   loadingInfinite = signal(false);
@@ -37,20 +46,20 @@ export class HomeComponent implements OnInit {
 
   // ── Computed signals (derivados) ───────────────────────
   resultCount = computed(() => this.games().length);
-  hasResults  = computed(() => this.games().length > 0);
-  isEmpty     = computed(() => !this.loading() && !this.error() && this.games().length === 0);
+  hasResults = computed(() => this.games().length > 0);
+  isEmpty = computed(() => !this.loading() && !this.error() && this.games().length === 0);
   isSearching = computed(() => !!this.searchQuery());
 
   constructor() {
     // Listen to query parameters to reload games when a search is triggered
-    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe((params) => {
       const query = params['q'];
       this.searchQuery.set(query || null);
       this.loadGames(query);
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   private loadGames(query?: string): void {
     this.loading.set(true);
@@ -69,16 +78,18 @@ export class HomeComponent implements OnInit {
         error: (err) => {
           this.error.set(err.message || 'Error al buscar juegos');
           this.loading.set(false);
-        }
+        },
       });
     } else {
-      console.log('🎮 PLAYtop — Cargando secciones de inicio (Populares, Valorados y Listado Infinito)...');
-      
+      console.log(
+        '🎮 PLAYtop — Cargando secciones de inicio (Populares, Valorados y Listado Infinito)...',
+      );
+
       // Load Popular, Top Rated, and first page of Infinite catalog in parallel
       forkJoin({
         popular: this.gamesService.getPopularGames(),
         topRated: this.gamesService.getTopRatedGames(),
-        allGames: this.gamesService.getAllGames(1, 20)
+        allGames: this.gamesService.getAllGames(1, 20),
       }).subscribe({
         next: (res) => {
           this.popularGames.set(res.popular.results);
@@ -98,7 +109,7 @@ export class HomeComponent implements OnInit {
         error: (err) => {
           this.error.set(err.message || 'Error al cargar los juegos');
           this.loading.set(false);
-        }
+        },
       });
     }
   }
@@ -114,7 +125,7 @@ export class HomeComponent implements OnInit {
     this.gamesService.getAllGames(nextPage, 20).subscribe({
       next: (response) => {
         if (response.results.length > 0) {
-          this.infiniteGames.update(current => [...current, ...response.results]);
+          this.infiniteGames.update((current) => [...current, ...response.results]);
           this.currentPage.set(nextPage);
           this.hasMorePages.set(response.results.length >= 20);
         } else {
@@ -125,7 +136,7 @@ export class HomeComponent implements OnInit {
       error: (err) => {
         console.error('Error loading next page for infinite scroll:', err);
         this.loadingInfinite.set(false);
-      }
+      },
     });
   }
 
